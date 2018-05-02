@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const apiRouter = express.Router()
-const data = require("./data")
+const data = require('./data')
 
 apiRouter.get('/seller', (req, res) => {
   res.json({
