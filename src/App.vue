@@ -19,7 +19,6 @@
 
 <script>
 import Header from './components/header/header'
-import axios from 'axios'
 const ERR_OK = 0
 export default {
   name: 'App',
@@ -30,7 +29,7 @@ export default {
   },
   created() {
     (async () => {
-      const res = await axios.get('/api/seller')
+      const res = await this.$http.get('/api/seller')
       const data = res.data
       if (data.errno === ERR_OK) {
         this.seller = data.data

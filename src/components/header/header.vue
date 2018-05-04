@@ -13,7 +13,8 @@
           {{seller.description}}/{{seller.deliveryTime}}分钟送达
         </div>
         <div v-if="seller.supports" class="support">
-          <span class="icon" :class="classMap[seller.supports[0].type]"></span>
+          <!-- <span class="icon" :class="classMap[seller.supports[0].type]"></span> -->
+          <icon class="icon" :sizeType="'icon1'" :typeNum="seller.supports[0].type"></icon>
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
@@ -45,7 +46,8 @@
             </div>
             <ul v-if="seller.supports" class="supports">
               <li class="support-item" v-for="(item,i) in seller.supports" :key="i">
-                <span class="icon" :class="classMap[seller.supports[i].type]"></span>
+                <!-- <span class="icon" :class="classMap[seller.supports[i].type]"></span> -->
+                <icon class="icon" :sizeType="'icon2'" :typeNum="seller.supports[i].type"></icon>
                 <span class="text">{{seller.supports[i].description}}</span>
               </li>
             </ul>
@@ -69,9 +71,11 @@
 
 <script>
 import star from '../star/star'
+import icon from '../icon/icon'
+
 export default {
   components: {
-    star
+    star, icon
   },
   props: {
     seller: {
@@ -140,21 +144,7 @@ export default {
         .icon
           display: inline-block
           vertical-align: top
-          width: 12px
-          height: 12px
           margin-right: 6px
-          background-size: 12px 12px
-          background-repeat: no-repeat
-          &.decrease
-            bg-image('decrease_1')
-          &.discount
-            bg-image('discount_1')
-          &.guarantee
-            bg-image('guarantee_1')
-          &.invoice
-            bg-image('invoice_1')
-          &.special
-            bg-image('special_1')
         .text
           line-height: 12px
           font-size: 12px
@@ -264,22 +254,8 @@ export default {
               margin-bottom: 0
             .icon
               display: inline-block
-              width: 16px
-              height: 16px
               vertical-align: top
               margin-right: 6px
-              background-size: 16px 16px
-              background-repeat: no-repeat
-              &.decrease
-                bg-image('decrease_2')
-              &.discount
-                bg-image('discount_2')
-              &.guarantee
-                bg-image('guarantee_2')
-              &.invoice
-                bg-image('invoice_2')
-              &.special
-                bg-image('special_2')
             .text
               line-height: 16px
               font-size: 12px
