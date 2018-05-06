@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="tail"></div>
-    <router-view/>
+    <router-view :seller="seller"/>
   </div>
 </template>
 

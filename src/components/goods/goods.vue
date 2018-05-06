@@ -2,7 +2,7 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li class="menu-item" v-for="item in goods" :key="item.name">
+        <li class="menu-item" :class="{'current':currentIndex===i}" v-for="(item,i) in goods" :key="item.name" @click="selectMenu(i,$event)">
           <span class="text border-1px">
             <icon class="icon" v-if="item.type>0" :sizeType="'icon3'" :typeNum="item.type"></icon>{{item.name}}
           </span>
@@ -11,7 +11,7 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li class="foods-list" v-for="item in goods" :key="item.name">
+        <li class="foods-list food-list-hook" v-for="item in goods" :key="item.name">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li class="food-item border-1px" v-for="food in item.foods" :key="food.name">
@@ -22,10 +22,12 @@
                 <h2 class="name">{{food.name}}</h2>
                 <p class="desc">{{food.description}}</p>
                 <div class="extra">
-                  <span class="count">月售{{food.sellCount}}份</span><span>好评率</span>
+                  <span class="count">月售{{food.sellCount}}份</span>
+                  <span>好评率</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span>
+                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
               </div>
             </li>
@@ -33,18 +35,20 @@
         </li>
       </ul>
     </div>
+    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script>
 import icon from '../icon/icon'
 import BScroll from 'better-scroll'
+import shopcart from '../shopcart/shopcart'
 
 const ERR_OK = 0
 
 export default {
   components: {
-    icon
+    icon, shopcart
   },
   props: {
     seller: {
@@ -53,7 +57,9 @@ export default {
   },
   data() {
     return {
-      goods: []
+      goods: [],
+      listHeight: [],
+      scrollY: 0
     }
   },
   created() {
@@ -64,14 +70,56 @@ export default {
         this.goods = data.data
         this.$nextTick(() => {
           this._initScroll()
+          this._calculateHeight()
         })
       }
     })()
+    console.log(this.seller)
+  },
+  computed: {
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        const height1 = this.listHeight[i]
+        const height2 = this.listHeight[i + 1]
+        // -1有时候滚不到位
+        if (!height2 || (this.scrollY >= height1 - 1 && this.scrollY < height2 - 1)) {
+          return i
+        }
+      }
+      return 0
+    }
   },
   methods: {
+    selectMenu(index, event) {
+      // if (!event._constructed) {
+      //   return;
+      // }
+      // 桌面环境下也已经不会触发原生事件了
+      let foodlist = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook')
+      let el = foodlist[index]
+      this.foodsScroll.scrollToElement(el, 300)
+    },
     _initScroll() {
-      this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
-      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {})
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+        click: true
+      })
+      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        probeType: 3
+        // 传出滚动位置
+      })
+      this.foodsScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y))
+      })
+    },
+    _calculateHeight() {
+      let foodlist = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook')
+      let height = 0
+      this.listHeight.push(height)
+      for (let i = 0; i < foodlist.length; i++) {
+        const item = foodlist[i]
+        height += item.clientHeight
+        this.listHeight.push(height)
+      }
     }
   }
 }
@@ -97,6 +145,14 @@ export default {
       line-height: 14px
       padding: 0 12px
       border-1px(rgba(7, 17, 27, 0.1))
+      &.current
+        position: relative
+        z-index: 10
+        margin-top: -1px
+        background: #fff
+        .text
+          border-none()
+          font-weight: 700
       .text
         display: table-cell
         width: 56px
