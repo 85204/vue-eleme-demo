@@ -29,13 +29,16 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartControl :food="food" @setcount="handleSetCount" />
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
   </div>
 </template>
 
@@ -43,12 +46,14 @@
 import icon from '../icon/icon'
 import BScroll from 'better-scroll'
 import shopcart from '../shopcart/shopcart'
+import cartControl from '../cartcontrol/cartcontrol'
+import Vue from 'vue'
 
 const ERR_OK = 0
 
 export default {
   components: {
-    icon, shopcart
+    icon, shopcart, cartControl
   },
   props: {
     seller: {
@@ -59,7 +64,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectFoods: []
     }
   },
   created() {
@@ -87,7 +93,7 @@ export default {
         }
       }
       return 0
-    }
+    },
   },
   methods: {
     selectMenu(index, event) {
@@ -104,8 +110,9 @@ export default {
         click: true
       })
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-        probeType: 3
+        probeType: 3,
         // 传出滚动位置
+        click: true
       })
       this.foodsScroll.on('scroll', (pos) => {
         this.scrollY = Math.abs(Math.round(pos.y))
@@ -119,6 +126,18 @@ export default {
         const item = foodlist[i]
         height += item.clientHeight
         this.listHeight.push(height)
+      }
+    },
+    handleSetCount(item, v) {
+      if (!item.count) {
+        Vue.set(item, 'count', v)
+        this.selectFoods.push(item)
+      } else {
+        item.count = v
+      }
+      // 删除购物车中count为0的食物
+      if (v === 0) {
+        this.selectFoods.splice(this.selectFoods.findIndex(food => food === item), 1)
       }
     }
   }
@@ -212,4 +231,8 @@ export default {
           .old
             font-size: 10px
             text-decoration: line-through
+        .cartcontrol-wrapper
+          position: absolute
+          right: 0
+          bottom: 12px
 </style>

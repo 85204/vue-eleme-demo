@@ -37,16 +37,18 @@ export default {
   computed: {
     totalPrice() {
       let total = 0
-      this.selectFoods.forEach((food) => {
+      for (let i = 0; i < this.selectFoods.length; i++) {
+        const food = this.selectFoods[i]
         total += food.price * food.count
-      })
+      }
       return total
     },
     totalCount() {
       let count = 0
-      this.selectFoods.forEach((food) => {
+      for (let i = 0; i < this.selectFoods.length; i++) {
+        const food = this.selectFoods[i]
         count += food.count
-      })
+      }
       return count
     },
     payDesc() {
