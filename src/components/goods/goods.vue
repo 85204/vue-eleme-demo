@@ -38,7 +38,7 @@
         </li>
       </ul>
     </div>
-    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods" @add="addFood" />
+    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods" @setcount="handleSetCount" @add="addFood" @empty="handleEmpty" />
   </div>
 </template>
 
@@ -145,6 +145,13 @@ export default {
       this.$nextTick(() => {
         this.$refs.shopcart.drop(target)
       })
+    },
+    handleEmpty() {
+      for (let i = 0; i < this.selectFoods.length; i++) {
+        const food = this.selectFoods[i]
+        food.count = 0
+      }
+      this.selectFoods = []
     }
   }
 }
