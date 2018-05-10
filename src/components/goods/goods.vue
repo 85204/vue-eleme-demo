@@ -30,7 +30,7 @@
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartControl :food="food" @setcount="handleSetCount" />
+                  <cartControl :food="food" @setcount="handleSetCount" @add="addFood" />
                 </div>
               </div>
             </li>
@@ -38,7 +38,7 @@
         </li>
       </ul>
     </div>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
+    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods" @add="addFood" />
   </div>
 </template>
 
@@ -139,6 +139,12 @@ export default {
       if (v === 0) {
         this.selectFoods.splice(this.selectFoods.findIndex(food => food === item), 1)
       }
+    },
+    addFood(target) {
+      // 体验优化,异步执行下落动画
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(target)
+      })
     }
   }
 }
