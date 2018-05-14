@@ -14,7 +14,7 @@
         <li class="foods-list food-list-hook" v-for="item in goods" :key="item.name">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li class="food-item border-1px" v-for="food in item.foods" :key="food.name">
+            <li class="food-item border-1px" v-for="food in item.foods" :key="food.name" @click="selectFood(food,$event)">
               <div class="icon">
                 <img width="57px" :src="food.icon">
               </div>
@@ -26,8 +26,7 @@
                   <span>好评率</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span>
-                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
                   <cartControl :food="food" @setcount="handleSetCount" @add="addFood" />
@@ -38,6 +37,7 @@
         </li>
       </ul>
     </div>
+    <food :food="selectedFood" @setcount="handleSetCount" @add="addFood" ref="food" />
     <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods" @setcount="handleSetCount" @add="addFood" @empty="handleEmpty" />
   </div>
 </template>
@@ -48,12 +48,13 @@ import BScroll from 'better-scroll'
 import shopcart from '../shopcart/shopcart'
 import cartControl from '../cartcontrol/cartcontrol'
 import Vue from 'vue'
+import food from '../food/food'
 
 const ERR_OK = 0
 
 export default {
   components: {
-    icon, shopcart, cartControl
+    icon, shopcart, cartControl, food
   },
   props: {
     seller: {
@@ -65,7 +66,8 @@ export default {
       goods: [],
       listHeight: [],
       scrollY: 0,
-      selectFoods: []
+      selectFoods: [], // 在购物车里的数据
+      selectedFood: {}, // 选择的数据
     }
   },
   created() {
@@ -80,7 +82,6 @@ export default {
         })
       }
     })()
-    console.log(this.seller)
   },
   computed: {
     currentIndex() {
@@ -96,6 +97,10 @@ export default {
     },
   },
   methods: {
+    selectFood(food, event) {
+      this.selectedFood = food
+      this.$refs.food.show()
+    },
     selectMenu(index, event) {
       // if (!event._constructed) {
       //   return;
