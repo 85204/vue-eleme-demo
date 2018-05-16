@@ -13,7 +13,9 @@
       </div>
     </div>
     <div class="tail"></div>
-    <router-view :seller="seller"/>
+    <keep-alive>
+      <router-view :seller="seller"/>
+    </keep-alive>
   </div>
 </template>
 
