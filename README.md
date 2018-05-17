@@ -1,21 +1,20 @@
 # vue-eleme-demo
 
-> A Vue.js project
+## 简介
 
-## Build Setup
+学习黄轶老师的vue高仿饿了么实战(https://coding.imooc.com/class/74.html)，全程手敲，收获颇多，推荐有一定基础的同学入门vue移动开发。
 
-``` bash
-# install dependencies
-npm install
+## 相对官方源码的改进
 
-# serve with hot reload at localhost:8080
-npm run dev
+本着用新不用旧的原则，项目构建使用的是最新vue和vue-cli的源码。  
+新版vue-cli中已经不依赖express了，查看官方cli文档，给出了一个proxy接口，使用proxy解决跨域问题，独立新建了一个express用于吐api数据。  
+使用axios取代vue-resource。  
+实践单向数据流，不修改props中的数据。  
+将icon抽象成一个组件。  
+添加到购物车的小球动画运行逻辑改进，修复快速点击不同位置+号的时候，小球出现位置异常的BUG。  
+教程最后几个组件尝试自己先手写一遍，实现有问题再看视频教程修改，所以最后几个组件代码区别比较大，不影响使用。  
 
-# build for production with minification
-npm run build
+## 还可以改进的方向
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+为了实践单向数据流，通过事件通知父组件修改props，当组件嵌套层级加深，而vue没有提供事件透传机制，事件传递代码过于繁琐，应当使用vuex来管理数据。  
+不使用express搭建服务器，使用mockjs来劫持ajax请求并返回mock数据，真正做到前后端分离。  
