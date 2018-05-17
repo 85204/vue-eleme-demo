@@ -2,7 +2,7 @@
 
 ## 简介
 
-学习黄轶老师的vue高仿饿了么实战(https://coding.imooc.com/class/74.html)，全程手敲，收获颇多，推荐有一定基础的同学入门vue移动开发。
+学习黄轶老师的vue高仿饿了么实战( https://coding.imooc.com/class/74.html )，全程手敲，收获颇多，推荐有一定基础的同学入门vue移动开发。
 
 ## 相对官方源码的改进
 
